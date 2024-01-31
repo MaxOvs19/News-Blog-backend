@@ -1,5 +1,6 @@
 import { db } from "../db.js";
 import { DataTypes } from "sequelize";
+import { Post } from "./Post.js";
 
 export const User = db.define("user", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -8,3 +9,6 @@ export const User = db.define("user", {
   password: { type: DataTypes.STRING },
   avatar: { type: DataTypes.STRING },
 });
+
+User.hasMany(Post);
+Post.belongsTo(User);

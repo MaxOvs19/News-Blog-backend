@@ -15,6 +15,7 @@ const generateJWT = (id, email, name) => {
 };
 
 class UserController {
+  //@POST
   async registration(req, res) {
     const { name, email, password } = req.body;
 
@@ -50,6 +51,7 @@ class UserController {
     });
   }
 
+  //@POST
   async login(req, res) {
     const { email, password } = req.body;
 
@@ -74,12 +76,17 @@ class UserController {
     return res.json({ token: token });
   }
 
+  //@GET
   async check(req, res) {
     const token = generateJWT(req.user.id, req.user.email, req.user.name);
     res.status(200).json({ token: token });
   }
 
-  async getOne(req, res) {}
+  //@PUT
+  async update(req, res) {}
+
+  //@DELETE
+  async delete(req, res) {}
 }
 
 export default new UserController();

@@ -9,7 +9,7 @@ import router from "./routes/index.js";
 
 import "dotenv/config";
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.NODE_LOCAL_PORT || 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

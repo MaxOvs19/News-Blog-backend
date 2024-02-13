@@ -19,6 +19,7 @@ class PostController {
         },
         {
           model: TypeNews,
+          attributes: ["name"],
         },
       ],
     });
@@ -42,6 +43,7 @@ class PostController {
         },
         {
           model: TypeNews,
+          attributes: ["name"],
         },
       ],
     });
@@ -51,9 +53,9 @@ class PostController {
         massage: "Post not found!",
         status: false,
       });
+    } else {
+      return res.status(200).json(post);
     }
-
-    return res.status(200).json(post);
   }
 
   //@GET
@@ -125,10 +127,53 @@ class PostController {
   }
 
   //@PUT
-  async update(req, res) {}
+  async update(req, res) {
+    const { id } = req.params;
+    const { title, content, img, typeId } = req.body;
+
+    const post = await Post.findOne({ where: { id: id } });
+    const checkType = await TypeNews.findOne({ where: { id: typeId } });
+
+    if (post && checkType) {
+      await post.update({
+        title: title,
+        content: content,
+        img: img,
+        typeNewId: typeId,
+      });
+
+      return res.status(202).json({
+        message: "Post update!",
+        status: true,
+      });
+    } else {
+      res.status(404).json({
+        massage: "Post or type news, not found!",
+        status: false,
+      });
+    }
+  }
 
   //@DELETE
-  async delete(req, res) {}
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const checkPost = await Post.findOne({ where: { id: id } });
+
+    if (!checkPost) {
+      res.status(404).json({
+        massage: "Post not found!",
+        status: false,
+      });
+    } else {
+      await checkPost.destroy();
+
+      return res.status(200).json({
+        massage: "Post delete",
+        status: true,
+      });
+    }
+  }
 }
 
 export default new PostController();

@@ -19,6 +19,7 @@ class PostController {
         },
         {
           model: TypeNews,
+          attributes: ["name"],
         },
       ],
     });
@@ -42,6 +43,7 @@ class PostController {
         },
         {
           model: TypeNews,
+          attributes: ["name"],
         },
       ],
     });
@@ -51,9 +53,9 @@ class PostController {
         massage: "Post not found!",
         status: false,
       });
+    } else {
+      return res.status(200).json(post);
     }
-
-    return res.status(200).json(post);
   }
 
   //@GET
@@ -128,7 +130,26 @@ class PostController {
   async update(req, res) {}
 
   //@DELETE
-  async delete(req, res) {}
+  async delete(req, res) {
+    const { id } = req.params;
+    console.log(id);
+
+    const checkPost = await Post.findOne({ where: { id: id } });
+
+    if (!checkPost) {
+      res.status(404).json({
+        massage: "Post not found!",
+        status: false,
+      });
+    } else {
+      await checkPost.destroy();
+
+      return res.status(200).json({
+        massage: "Post delete",
+        status: true,
+      });
+    }
+  }
 }
 
 export default new PostController();

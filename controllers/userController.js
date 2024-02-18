@@ -1,6 +1,12 @@
 import { User } from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const generateJWT = (id, email, name) => {
   return jwt.sign(
@@ -83,10 +89,35 @@ class UserController {
   }
 
   //@PUT
-  async update(req, res) {}
+  async update(req, res) {
+    const { name, id, status } = req.body;
+    let fileName = uuidv4() + ".jpg";
 
-  //@DELETE
-  async delete(req, res) {}
+    if (req.files?.img) {
+      req.files.img.mv(path.resolve(__dirname, "..", "static", fileName));
+    } else {
+      fileName = null;
+    }
+
+    const user = await User.findByPk(id);
+
+    if (user) {
+      await user.update({
+        name: name,
+        status: status,
+        avatar: fileName,
+      });
+
+      return res.status(201).json({
+        message: "User update!",
+        status: true,
+      });
+    } else {
+      return res.status(404).json({
+        message: "User not found!",
+      });
+    }
+  }
 }
 
 export default new UserController();

@@ -22,5 +22,11 @@ class TypeNewsController {
       status: true,
     });
   }
+
+  async getAll(req, res) {
+    const allType = await TypeNews.findAll();
+
+    return res.json(allType);
+  }
 }
 export default new TypeNewsController();

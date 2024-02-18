@@ -8,6 +8,7 @@ export const User = db.define("user", {
   email: { type: DataTypes.STRING, unique: true },
   password: { type: DataTypes.STRING },
   avatar: { type: DataTypes.STRING },
+  status: { type: DataTypes.TEXT },
 });
 
 User.hasMany(Post);

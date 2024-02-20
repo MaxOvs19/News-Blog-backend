@@ -77,7 +77,20 @@ class PostController {
         status: false,
       });
     }
-    const posts = await Post.findAll({ where: { userId: id } });
+
+    const posts = await Post.findAll({
+      where: { userId: id },
+      include: [
+        {
+          model: TypeNews,
+          attributes: ["name"],
+        },
+        {
+          model: Like,
+          attributes: ["id", "userId"],
+        },
+      ],
+    });
 
     return res.status(200).json(posts);
   }

@@ -14,7 +14,6 @@ export const Post = db.define("post", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   title: { type: DataTypes.STRING },
   content: { type: DataTypes.TEXT },
-  like: { type: DataTypes.INTEGER },
   img: { type: DataTypes.STRING },
 });
 

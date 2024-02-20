@@ -10,4 +10,7 @@ router.get("/:id", postController.getOne);
 router.put("/:id", postController.update);
 router.delete("/:id", postController.delete);
 
+router.post("/like", postController.setLike);
+router.post("/rm-like", postController.removeLike);
+
 export default router;

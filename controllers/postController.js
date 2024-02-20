@@ -2,7 +2,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
 
-import { Post, TypeNews, User } from "../models/models.js";
+import { Like, Post, TypeNews, User } from "../models/models.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +19,10 @@ class PostController {
         {
           model: TypeNews,
           attributes: ["name"],
+        },
+        {
+          model: Like,
+          attributes: ["id", "userId"],
         },
       ],
     });
@@ -43,6 +47,10 @@ class PostController {
         {
           model: TypeNews,
           attributes: ["name"],
+        },
+        {
+          model: Like,
+          attributes: ["id", "userId"],
         },
       ],
     });
@@ -170,6 +178,64 @@ class PostController {
       return res.status(200).json({
         massage: "Post delete",
         status: true,
+      });
+    }
+  }
+
+  //@POST
+  async setLike(req, res) {
+    const { userId, postId } = req.body;
+
+    const post = await Post.findByPk(postId);
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      res.status(404).json({
+        message: "User not found!",
+      });
+    }
+
+    if (!post) {
+      res.status(404).json({
+        message: "Post not found!",
+      });
+    }
+
+    if (user && post) {
+      const like = await Like.create({
+        userId: userId,
+        postId: postId,
+      });
+
+      like.save();
+
+      res.status(200).json({
+        status: true,
+        message: "Like success",
+      });
+    }
+  }
+
+  //@POST
+  async removeLike(req, res) {
+    const { userId, postId } = req.body;
+
+    const user = await User.findByPk(userId);
+    const post = await Post.findByPk(postId);
+
+    if (!post && !user) {
+      res.status(404).json({
+        message: "Error post or user not found!",
+      });
+    }
+
+    if (post && user) {
+      const like = await Like.findOne({ where: { postId: postId } });
+      await like.destroy();
+
+      res.status(200).json({
+        status: true,
+        message: "Like remove",
       });
     }
   }

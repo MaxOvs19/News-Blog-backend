@@ -1,4 +1,4 @@
-import { TypeNews } from "../models/Post.js";
+import { TypeNews } from "../models/models.js";
 
 class TypeNewsController {
   async create(req, res) {

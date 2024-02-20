@@ -2,8 +2,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
 
-import { Post, TypeNews } from "../models/Post.js";
-import { User } from "../models/User.js";
+import { Post, TypeNews, User } from "../models/models.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

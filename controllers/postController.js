@@ -210,6 +210,7 @@ class PostController {
 
     if (!post) {
       res.status(404).json({
+        status: false,
         message: "Post not found!",
       });
     }
@@ -238,6 +239,7 @@ class PostController {
 
     if (!post && !user) {
       res.status(404).json({
+        status: false,
         message: "Error post or user not found!",
       });
     }

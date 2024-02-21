@@ -8,12 +8,13 @@ import { User } from "../models/models.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const generateJWT = (id, email, name) => {
+const generateJWT = (id, email, name, avatar) => {
   return jwt.sign(
     {
       id: id,
       email: email,
       name: name,
+      avatar: avatar
     },
     process.env.SECRET_KEY,
     { expiresIn: "24h" }
@@ -46,7 +47,7 @@ class UserController {
       password: hashPassword,
     });
 
-    const jwToken = generateJWT(user.id, user.email, user.name);
+    const jwToken = generateJWT(user.id, user.email, user.name, user.avatar);
 
     user.save();
 
@@ -77,14 +78,14 @@ class UserController {
       });
     }
 
-    const token = generateJWT(user.id, user.email, user.name);
+    const token = generateJWT(user.id, user.email, user.name, user.avatar);
 
     return res.json({ token: token });
   }
 
   //@GET
   async check(req, res) {
-    const token = generateJWT(req.user.id, req.user.email, req.user.name);
+    const token = generateJWT(req.user.id, req.user.email, req.user.name, req.user.avatar);
     res.status(200).json({ token: token });
   }
 

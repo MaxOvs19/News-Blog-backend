@@ -18,7 +18,7 @@ class PostController {
         },
         {
           model: TypeNews,
-          attributes: ["name"],
+          
         },
         {
           model: Like,

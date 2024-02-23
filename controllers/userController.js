@@ -15,7 +15,7 @@ const generateJWT = (id, email, name, avatar, status) => {
       email: email,
       name: name,
       avatar: avatar,
-      status: status
+      status: status,
     },
     process.env.SECRET_KEY,
     { expiresIn: "24h" }
@@ -79,20 +79,32 @@ class UserController {
       });
     }
 
-    const token = generateJWT(user.id, user.email, user.name, user.avatar, user.status);
+    const token = generateJWT(
+      user.id,
+      user.email,
+      user.name,
+      user.avatar,
+      user.status
+    );
 
     return res.json({ token: token });
   }
 
   //@GET
   async check(req, res) {
-    const token = generateJWT(req.user.id, req.user.email, req.user.name, req.user.avatar, req.user.status);
+    const token = generateJWT(
+      req.user.id,
+      req.user.email,
+      req.user.name,
+      req.user.avatar,
+      req.user.status
+    );
     res.status(200).json({ token: token });
   }
 
   //@PUT
   async update(req, res) {
-    const { name, id, status } = req.body;
+    const { name, id, status, email } = req.body;
     let fileName = uuidv4() + ".jpg";
 
     if (req.files?.img) {
@@ -103,16 +115,44 @@ class UserController {
 
     const user = await User.findByPk(id);
 
+    if (email) {
+      const emailCheck = await User.findOne({ where: { email: email } });
+
+      if (emailCheck) {
+        return res.status(400).json({
+          message: "This email is used",
+        });
+      }
+    }
+
     if (user) {
-      await user.update({
-        name: name,
-        status: status,
-        avatar: fileName,
-      });
+      if (fileName != null) {
+        await user.update({
+          name: name,
+          status: status,
+          email: email,
+          avatar: fileName,
+        });
+      } else {
+        await user.update({
+          name: name,
+          status: status,
+          email: email,
+        });
+      }
+
+      const jwToken = generateJWT(
+        user.id,
+        user.email,
+        user.name,
+        user.avatar,
+        user.status
+      );
 
       return res.status(201).json({
         message: "User update!",
         status: true,
+        token: jwToken,
       });
     } else {
       return res.status(404).json({

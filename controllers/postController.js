@@ -18,7 +18,6 @@ class PostController {
         },
         {
           model: TypeNews,
-          
         },
         {
           model: Like,
@@ -150,17 +149,39 @@ class PostController {
   async update(req, res) {
     const { id } = req.params;
     const { title, content, img, typeId } = req.body;
+    let fileName = uuidv4() + ".jpg";
 
     const post = await Post.findOne({ where: { id: id } });
     const checkType = await TypeNews.findOne({ where: { id: typeId } });
 
-    if (post && checkType) {
-      await post.update({
-        title: title,
-        content: content,
-        img: img,
-        typeNewId: typeId,
+    if (req.files?.img) {
+      req.files.img.mv(path.resolve(__dirname, "..", "static", fileName));
+    } else {
+      fileName = null;
+    }
+
+    if (String(title).length == 0 && String(content).length == 0) {
+      res.status(400).json({
+        message: "Пост не может быть пустым!",
+        status: false,
       });
+    }
+
+    if (post && checkType) {
+      if (fileName !== null) {
+        await post.update({
+          title: title,
+          content: content,
+          img: fileName,
+          typeNewId: typeId,
+        });
+      } else {
+        await post.update({
+          title: title,
+          content: content,
+          typeNewId: typeId,
+        });
+      }
 
       return res.status(202).json({
         message: "Post update!",

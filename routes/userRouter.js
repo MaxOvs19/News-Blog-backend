@@ -10,5 +10,6 @@ router.post("/registration", userController.registration);
 router.put("/", userController.update);
 
 router.get("/auth", authMiddleware, userController.check);
+router.get("/page", userController.getOneUser);
 
 export default router;

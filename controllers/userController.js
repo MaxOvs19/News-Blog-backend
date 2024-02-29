@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
 import path from "path";
-import { User } from "../models/models.js";
+import { Post, User } from "../models/models.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -100,6 +100,24 @@ class UserController {
       req.user.status
     );
     res.status(200).json({ token: token });
+  }
+
+  async getOneUser(req, res) {
+    const { id } = req.query;
+
+    const user = await User.findByPk(id, {
+      attributes: ["name", "email", "avatar", "status"],
+      include: [{ model: Post }],
+    });
+
+    if (!user) {
+      res.status(404).json({
+        status: false,
+        message: "User not found!",
+      });
+    }
+
+    return res.status(200).json(user);
   }
 
   //@PUT

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
 import path from "path";
-import { Post, User } from "../models/models.js";
+import { Like, Post, User } from "../models/models.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -107,7 +107,16 @@ class UserController {
 
     const user = await User.findByPk(id, {
       attributes: ["name", "email", "avatar", "status"],
-      include: [{ model: Post }],
+      include: [
+        {
+          model: Post,
+          include: [
+            {
+              model: Like,
+            },
+          ],
+        },
+      ],
     });
 
     if (!user) {
